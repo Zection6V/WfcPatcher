@@ -1,4 +1,4 @@
-I created a batch file that patches your ROM to connect to WFC.
+# I created a batch file that patches your ROM to connect to WFC.
 Just drop your NDS file onto the .bat file included.
 <img width="278" height="28" alt="image" src="https://github.com/user-attachments/assets/eb5fc27b-6a09-4ad2-b783-06f5f68574d0" />
 
@@ -19,8 +19,9 @@ You need to use version 1.6 of wfcPatcher.exe for this to work.
 The .bat file must be placed in the same directory as the .exe.
 https://github.com/AdmiralCurtiss/WfcPatcher/releases/tag/v1.6 
 
+---
 
-WFC に接続できるように ROM をパッチするバッチファイルを作成しました。  
+# WFC に接続できるように ROM をパッチするバッチファイルを作成しました。  
 同梱されている `.bat` ファイルに NDS ファイルをドラッグ＆ドロップするだけです。
 
 <img width="278" height="28" alt="image" src="https://github.com/user-attachments/assets/eb5fc27b-6a09-4ad2-b783-06f5f68574d0" />
