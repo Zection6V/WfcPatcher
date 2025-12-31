@@ -12,3 +12,7 @@ Set Auto-obtain DNS to Yes.
 
 
 So even if your issue is caused by your ISP, you’ll still be able to connect to WFC. 
+
+You need to use version 1.6 of wfcPatcher.exe for this to work.
+The .bat file must be placed in the same directory as the .exe.
+https://github.com/AdmiralCurtiss/WfcPatcher/releases/tag/v1.6 
