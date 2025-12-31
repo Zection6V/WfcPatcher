@@ -9,6 +9,7 @@ It will generate a newly patched NDS file.
 With this, you can connect to WFC without changing your DNS settings.
 Note: Make sure to clear any manual DNS settings.
 Set Auto-obtain DNS to Yes.
+
 <img width="256" height="382" alt="image" src="https://github.com/user-attachments/assets/eeaf8729-03fe-4f9e-9ba3-3a7c66130369" />
 
 
