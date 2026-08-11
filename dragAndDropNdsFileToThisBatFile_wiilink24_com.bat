@@ -27,7 +27,7 @@ for %%F in (%*) do (
     if /I "!ext!"=="nds" (
         echo.
         echo [OK] Processing: %%~nxF ...
-        wfcpatcher "%%~fF" --domain wiilink24.com
+        wfcpatcher "%%~fF" --domain wiilink.ca
     ) else (
         echo.
         echo [SKIP] %%~nxF is not .nds, skipping.
