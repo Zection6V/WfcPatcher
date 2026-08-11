@@ -1,0 +1,25 @@
+name: Retarget Release1.6.0.5
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/retarget-release-1.6.0.5.yml
+
+permissions:
+  contents: write
+
+jobs:
+  retarget:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Move release tag to clean commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api \
+            --method PATCH \
+            "repos/$GITHUB_REPOSITORY/git/refs/tags/Release1.6.0.5" \
+            -f sha="30bfc0a0eb43c66243ef852ed808cbb02af36302" \
+            -F force=true
