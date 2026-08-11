@@ -6,24 +6,7 @@ This repository contains simple Windows helpers for Nintendo DS online services.
 
 The current helpers use Windows NRPT so only `*.nintendowifi.net` is resolved through the selected replacement-service DNS server. The PC's global DNS setting is not changed, and ROM patching is not required for the confirmed WiiLink setup.
 
-### Main menu
-
-Run:
-
-```text
-switch_WFC_DNS_service.bat
-```
-
-Options:
-
-```text
-1. WiiLink WFC              - 5.161.56.11
-2. Wiimmfi / Kaeru WFC      - 178.62.43.212
-3. Show current status
-4. Remove WFC DNS routing / restore normal DNS
-```
-
-### Direct scripts
+### Scripts
 
 ```text
 enable_WiiLink_WFC.bat
@@ -33,6 +16,8 @@ remove_WFC_DNS_routing.bat
 ```
 
 The two enable scripts are mutually exclusive. Enabling WiiLink removes the repository-managed Wiimmfi rule first, and enabling Wiimmfi removes the repository-managed WiiLink rule first.
+
+**To switch servers, just run the enable script for the server you want to use.**
 
 ### WiiLink WFC
 
@@ -119,22 +104,7 @@ https://github.com/AdmiralCurtiss/WfcPatcher/releases/tag/v1.6
 
 Windows の NRPT を使い、`*.nintendowifi.net` の名前解決だけを選択したサービスのDNSへ送ります。PC全体のDNS設定は変更しません。確認済みのWiiLink構成ではROMパッチも不要です。
 
-### メインメニュー
-
-```text
-switch_WFC_DNS_service.bat
-```
-
-から次を選べます。
-
-```text
-1. WiiLink WFC              - 5.161.56.11
-2. Wiimmfi / Kaeru WFC      - 178.62.43.212
-3. 現在の状態を表示
-4. WFC DNSルーティングを解除して通常DNSへ戻す
-```
-
-### 個別バッチ
+### 使用するバッチ
 
 ```text
 enable_WiiLink_WFC.bat
@@ -143,7 +113,9 @@ show_WFC_DNS_status.bat
 remove_WFC_DNS_routing.bat
 ```
 
-WiiLinkとWiimmfiの有効化バッチは排他的に動作します。使いたい方のenableバッチを実行するだけでDNSルーティングを相互切り替えできます。
+WiiLinkとWiimmfiの有効化バッチは排他的に動作します。WiiLinkを有効にするとWiimmfi用ルールを削除してからWiiLinkを設定し、Wiimmfiを有効にするとWiiLink用ルールを削除してからWiimmfiを設定します。
+
+**サーバーを切り替える場合は、使いたい方の enable バッチを実行するだけです。**
 
 ### WiiLink WFC
 
