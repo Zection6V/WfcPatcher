@@ -1,6 +1,6 @@
 @echo off
 setlocal
-title Disable WiiLink WFC DNS routing
+title Disable Wiimmfi WFC DNS routing
 
 set "SELF=%~f0"
 
@@ -12,21 +12,21 @@ if errorlevel 1 (
 )
 
 echo --------------------------------------------------
-echo   WiiLink WFC - Disable DNS routing
+echo   Wiimmfi WFC - Disable DNS routing
 echo --------------------------------------------------
 echo.
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference = 'Stop'; $displayName = 'WiiLink WFC Nintendo DS'; $rules = @(Get-DnsClientNrptRule -ErrorAction SilentlyContinue ^| Where-Object { $_.DisplayName -eq $displayName }); foreach ($rule in $rules) { Remove-DnsClientNrptRule -Name $rule.Name -Force -ErrorAction Stop }; Clear-DnsClientCache"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference = 'Stop'; $displayName = 'Wiimmfi WFC Nintendo DS'; $rules = @(Get-DnsClientNrptRule -ErrorAction SilentlyContinue ^| Where-Object { $_.DisplayName -eq $displayName }); foreach ($rule in $rules) { Remove-DnsClientNrptRule -Name $rule.Name -Force -ErrorAction Stop }; Clear-DnsClientCache"
 
 if errorlevel 1 (
     echo.
-    echo [ERROR] Failed to remove WiiLink WFC DNS routing.
+    echo [ERROR] Failed to remove Wiimmfi WFC DNS routing.
     pause
     exit /b 1
 )
 
-echo [OK] WiiLink WFC DNS routing has been removed.
-echo If the Wiimmfi helper rule is active, it remains active.
+echo [OK] Wiimmfi WFC DNS routing has been removed.
+echo If the WiiLink helper rule is active, it remains active.
 echo Use disable_all_WFC_DNS_routing.bat to remove both helper rules.
 echo.
 pause
