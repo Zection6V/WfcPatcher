@@ -14,6 +14,7 @@ Use this checklist when changing the DNS helper scripts.
 10. Confirm status reports normal DNS / no repository-managed WFC rule.
 11. Confirm unrelated NRPT rules, if any, were not removed.
 12. Confirm `nas.nintendowifi.net` IPv4 resolution is displayed by the status helper after each state change.
-13. Test all four menu actions in `switch_WFC_DNS_service.bat`.
+
+No separate switcher is required: running either enable script must directly switch the active service by removing the other repository-managed rule first.
 
 Implementation rule: avoid PowerShell pipelines inside quoted `.bat` `powershell -Command` strings. Prefer variable assignment plus `foreach`/`if` logic to avoid cmd.exe/PowerShell escaping ambiguity.
