@@ -82,6 +82,8 @@ Result:
 .nintendowifi.net -> DNS 178.62.43.212
 ```
 
+No separate switcher is required. To change servers, run the enable script for the server you want to use; it automatically removes the other repository-managed rule first.
+
 ## Important: DNS switching is not WFC profile switching
 
 The DNS helper changes where `*.nintendowifi.net` is resolved, but it does not rewrite or migrate the Nintendo DS WFC user information stored by the game/system.
@@ -93,7 +95,7 @@ Example:
 ```text
 Connect to WiiLink
     -> WiiLink-side WFC user/profile state is established
-Switch NRPT to Wiimmfi
+Run enable_Wiimmfi_WFC.bat
     -> DS still carries the previous WFC user information
     -> error 60000 may occur
 ```
@@ -139,14 +141,6 @@ remove_WFC_DNS_routing.bat
 ```
 
 This removes both repository-managed DisplayName values and clears the Windows DNS cache. It intentionally leaves unrelated NRPT rules alone.
-
-### Menu wrapper
-
-```text
-switch_WFC_DNS_service.bat
-```
-
-Options are WiiLink, Wiimmfi, status, and remove/restore-normal-DNS.
 
 ## PowerShell/cmd.exe escaping bug found in Release1.6.0.7
 
