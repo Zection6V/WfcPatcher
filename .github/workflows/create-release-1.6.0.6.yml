@@ -1,0 +1,39 @@
+name: Create Release1.6.0.6
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/create-release-1.6.0.6.yml
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release1.6.0.6
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > release-notes.md <<'EOF'
+          ## WiiLink WFC fix
+
+          - Replaced the obsolete `--domain wiilink.ca` ROM-patching method with Windows NRPT DNS routing.
+          - Added `enable_WiiLink_WFC.bat` to route `.nintendowifi.net` through the WiiLink WFC DNS server `5.161.56.11`.
+          - Added `disable_WiiLink_WFC.bat` to remove the WiiLink NRPT rule and restore normal DNS behavior.
+          - Confirmed that WiiLink WFC works with an original, unmodified NDS ROM; NoSSL patching is not required for the confirmed setup.
+          - Removed `dragAndDropNdsFileToThisBatFile_wiilink_ca.bat` because `--domain wiilink.ca` is not the correct current DS connection method.
+          - Updated the English/Japanese README.
+          - Added `docs/WIILINK_WFC_DNS_INVESTIGATION.md` with the complete investigation, failed approaches, root cause, validation commands, and melonDS/melonPrimeDS DNS-path notes.
+
+          The existing Wiimmfi drag-and-drop ROM patch workflow remains available and unchanged.
+          EOF
+
+          gh release create Release1.6.0.6 \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "79bde5d7e992ff1083d7e8715c9754931110389f" \
+            --title "Release1.6.0.6" \
+            --notes-file release-notes.md
