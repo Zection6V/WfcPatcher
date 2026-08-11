@@ -2,11 +2,11 @@
 
 This repository contains simple Windows helpers for Nintendo DS online services.
 
-## DNS routing helpers
+## Recommended DNS-routing helpers
 
-The recommended Windows helpers use NRPT to route only `*.nintendowifi.net` through the selected Nintendo DS replacement-service DNS server. They do not change the DNS server for the whole PC.
+The current helpers use Windows NRPT so only `*.nintendowifi.net` is resolved through the selected replacement-service DNS server. The PC's global DNS setting is not changed, and ROM patching is not required for the confirmed WiiLink setup.
 
-### One-click service switcher
+### Main menu
 
 Run:
 
@@ -14,90 +14,90 @@ Run:
 switch_WFC_DNS_service.bat
 ```
 
-and choose:
+Options:
 
 ```text
-1. WiiLink WFC   - 5.161.56.11
-2. Wiimmfi       - 178.62.43.212
-3. Disable all repository-managed WFC DNS routing
+1. WiiLink WFC              - 5.161.56.11
+2. Wiimmfi / Kaeru WFC      - 178.62.43.212
+3. Show current status
+4. Remove WFC DNS routing / restore normal DNS
 ```
 
-You can also run the individual scripts directly.
-
-### WiiLink WFC
+### Direct scripts
 
 ```text
 enable_WiiLink_WFC.bat
+enable_Wiimmfi_WFC.bat
+show_WFC_DNS_status.bat
+remove_WFC_DNS_routing.bat
 ```
 
-The script configures:
+The two enable scripts are mutually exclusive. Enabling WiiLink removes the repository-managed Wiimmfi rule first, and enabling Wiimmfi removes the repository-managed WiiLink rule first.
+
+### WiiLink WFC
 
 ```text
 Namespace:   .nintendowifi.net
 DNS server:  5.161.56.11
 ```
 
-For the confirmed melonPrimeDS/Metroid Prime Hunters setup, an original/unmodified ROM works; NoSSL patching and `--domain wiilink.ca` are not required.
+For melonPrimeDS + Metroid Prime Hunters, an original/unmodified ROM was confirmed to connect successfully. NoSSL patching and `--domain wiilink.ca` are not required.
 
 ### Wiimmfi / Kaeru WFC
-
-```text
-enable_Wiimmfi_WFC.bat
-```
-
-The script configures:
 
 ```text
 Namespace:   .nintendowifi.net
 DNS server:  178.62.43.212
 ```
 
-`178.62.43.212` is used as the Nintendo DS DNS endpoint for the Wiimmfi/Kaeru WFC path.
+### Important when switching between WFC servers: error 60000
 
-### Switch between WiiLink and Wiimmfi
+Nintendo DS WFC user information is tied to the server/profile state stored by the game/system. If you first connect to one replacement server (for example WiiLink) and then switch DNS routing to another server (for example Wiimmfi), attempting to reuse the existing WFC user information may result in error `60000`.
 
-The two enable scripts are mutually exclusive:
+If error `60000` appears after changing servers:
 
-- `enable_WiiLink_WFC.bat` removes this repository's Wiimmfi NRPT rule before enabling WiiLink.
-- `enable_Wiimmfi_WFC.bat` removes this repository's WiiLink NRPT rule before enabling Wiimmfi.
+1. Open the Nintendo DS Wi-Fi Connection settings.
+2. Delete the existing WFC user information/profile.
+3. Connect again so new WFC user information is created for the newly selected server.
 
-So switching services is just a matter of running the other enable script, or using `switch_WFC_DNS_service.bat`.
+If you want to switch between servers frequently without recreating the WFC user information every time, keep separate emulator data folders / emulator copies for each server so each environment retains its own WFC user information.
 
-### Disable DNS routing
+Changing the NRPT DNS rule and changing the DS WFC user profile are separate operations.
 
-Individual removal:
+### Status check
 
-```text
-disable_WiiLink_WFC.bat
-disable_Wiimmfi_WFC.bat
-```
-
-Remove both helper rules and restore normal Windows DNS behavior:
+Run:
 
 ```text
-disable_all_WFC_DNS_routing.bat
+show_WFC_DNS_status.bat
 ```
 
-All scripts request administrator privileges automatically and clear the Windows DNS cache after changing NRPT.
+It displays:
 
-The leading `.` in `.nintendowifi.net` is important because the rule must match subdomains such as `nas.nintendowifi.net`.
+- which repository-managed WFC service is active
+- NRPT namespace
+- configured DNS server
+- current IPv4 resolution for `nas.nintendowifi.net`
 
-You can verify the active resolution in PowerShell:
+### Restore normal DNS
 
-```powershell
-Get-DnsClientNrptPolicy -Effective | Where-Object { $_.Namespace -match "nintendowifi" }
-Resolve-DnsName nas.nintendowifi.net -Type A
+Run:
+
+```text
+remove_WFC_DNS_routing.bat
 ```
+
+It removes both repository-managed WiiLink/Wiimmfi NRPT rules and clears the Windows DNS cache.
+
+The leading `.` in `.nintendowifi.net` is important: it makes the rule apply to subdomains such as `nas.nintendowifi.net`.
 
 ## Legacy Wiimmfi ROM patching
 
-The existing drag-and-drop helper is kept for compatibility:
+The original drag-and-drop helper is kept for compatibility:
 
 ```text
 dragAndDropNdsFileToThisBatFile_wiimmfi_de.bat
 ```
-
-Drop an `.nds` file onto it to create a ROM patched for `wiimmfi.de`.
 
 The included `WfcPatcher.exe` is based on AdmiralCurtiss/WfcPatcher v1.6:
 https://github.com/AdmiralCurtiss/WfcPatcher/releases/tag/v1.6
@@ -107,6 +107,7 @@ https://github.com/AdmiralCurtiss/WfcPatcher/releases/tag/v1.6
 - [`docs/WIILINK_WFC_DNS_INVESTIGATION.md`](docs/WIILINK_WFC_DNS_INVESTIGATION.md)
 - [`docs/WIIMMFI_WFC_DNS.md`](docs/WIIMMFI_WFC_DNS.md)
 - [`docs/WFC_DNS_ROUTING_AND_SWITCHING.md`](docs/WFC_DNS_ROUTING_AND_SWITCHING.md)
+- [`docs/WFC_DNS_SWITCH_TEST_CHECKLIST.md`](docs/WFC_DNS_SWITCH_TEST_CHECKLIST.md)
 
 ---
 
@@ -114,33 +115,37 @@ https://github.com/AdmiralCurtiss/WfcPatcher/releases/tag/v1.6
 
 このリポジトリには Nintendo DS のオンラインサービスへ接続するための Windows 向けヘルパーを置いています。
 
-## DNSルーティング方式
+## 推奨: NRPTによるDNSルーティング
 
-Windows の NRPT を使い、`*.nintendowifi.net` の名前解決だけを選択したサービスのDNSへ送ります。PC全体のDNSサーバー設定を変更する方式ではありません。
+Windows の NRPT を使い、`*.nintendowifi.net` の名前解決だけを選択したサービスのDNSへ送ります。PC全体のDNS設定は変更しません。確認済みのWiiLink構成ではROMパッチも不要です。
 
-### ワンクリック切り替え
+### メインメニュー
 
 ```text
 switch_WFC_DNS_service.bat
 ```
 
-を実行すると、次から選択できます。
+から次を選べます。
 
 ```text
-1. WiiLink WFC   - 5.161.56.11
-2. Wiimmfi       - 178.62.43.212
-3. このリポジトリが管理するWFC DNSルールをすべて解除
+1. WiiLink WFC              - 5.161.56.11
+2. Wiimmfi / Kaeru WFC      - 178.62.43.212
+3. 現在の状態を表示
+4. WFC DNSルーティングを解除して通常DNSへ戻す
 ```
 
-個別のバッチを直接実行しても構いません。
-
-### WiiLink WFC
+### 個別バッチ
 
 ```text
 enable_WiiLink_WFC.bat
+enable_Wiimmfi_WFC.bat
+show_WFC_DNS_status.bat
+remove_WFC_DNS_routing.bat
 ```
 
-設定内容:
+WiiLinkとWiimmfiの有効化バッチは排他的に動作します。使いたい方のenableバッチを実行するだけでDNSルーティングを相互切り替えできます。
+
+### WiiLink WFC
 
 ```text
 Namespace:   .nintendowifi.net
@@ -152,56 +157,41 @@ melonPrimeDS + Metroid Prime Hunters では、未改変のオリジナルROMで�
 ### Wiimmfi / Kaeru WFC
 
 ```text
-enable_Wiimmfi_WFC.bat
-```
-
-設定内容:
-
-```text
 Namespace:   .nintendowifi.net
 DNS server:  178.62.43.212
 ```
 
-`178.62.43.212` を DS 向け Wiimmfi / Kaeru WFC のDNSとして使用します。
+### サーバー切り替え時の注意: エラー60000
 
-### WiiLink と Wiimmfi の相互切り替え
+たとえば一度WiiLinkへ接続したあと、そのDSのWFCユーザー情報をそのまま使ってWiimmfiなど別のWFCサーバーへ接続しようとすると、エラー `60000` が出る場合があります。
 
-2つの有効化バッチは排他的に動作します。
+別のサーバーへ変更したあとに `60000` が出た場合は、DSの「Wi-Fi Connection設定」から既存のWFCユーザー情報を削除し、新しく選択したサーバー用のWFCユーザー情報を作り直してください。
 
-- `enable_WiiLink_WFC.bat` は、このリポジトリが作成したWiimmfi用ルールを削除してからWiiLinkを有効化します。
-- `enable_Wiimmfi_WFC.bat` は、このリポジトリが作成したWiiLink用ルールを削除してからWiimmfiを有効化します。
+WiiLinkとWiimmfiなど複数のサーバーを頻繁に切り替えたい場合は、エミュレータのデータフォルダやエミュレータ本体のフォルダをサーバーごとに分け、それぞれの環境でWFCユーザー情報を保持しておく方法もあります。
 
-そのため、**使いたい方の enable バッチを実行するだけで切り替え可能**です。`switch_WFC_DNS_service.bat` から選択することもできます。
+**NRPTによる接続先DNSの切り替えと、DS側のWFCユーザー情報の切り替えは別の処理です。**
 
-### 元に戻す
-
-個別解除:
+### 現在の状態確認
 
 ```text
-disable_WiiLink_WFC.bat
-disable_Wiimmfi_WFC.bat
+show_WFC_DNS_status.bat
 ```
 
-両方まとめて解除:
+で、現在有効なサービス、NRPT namespace、DNS server、`nas.nintendowifi.net` のIPv4解決結果を確認できます。
+
+### 通常DNSへ戻す
 
 ```text
-disable_all_WFC_DNS_routing.bat
+remove_WFC_DNS_routing.bat
 ```
 
-各バッチは必要に応じて管理者権限を自動要求し、NRPT変更後にWindowsのDNSキャッシュをクリアします。
+このリポジトリが作成したWiiLink/Wiimmfi用NRPTルールをまとめて削除し、WindowsのDNSキャッシュをクリアします。
 
-`.nintendowifi.net` の先頭の `.` は重要です。これにより `nas.nintendowifi.net` などのサブドメインにもルールが適用されます。
-
-確認コマンド:
-
-```powershell
-Get-DnsClientNrptPolicy -Effective | Where-Object { $_.Namespace -match "nintendowifi" }
-Resolve-DnsName nas.nintendowifi.net -Type A
-```
+`.nintendowifi.net` の先頭の `.` は重要です。これにより `nas.nintendowifi.net` などのサブドメインにも適用されます。
 
 ## 従来のWiimmfi ROMパッチ
 
-従来のドラッグ＆ドロップ用バッチも互換用として残しています。
+互換用として従来のバッチも残しています。
 
 ```text
 dragAndDropNdsFileToThisBatFile_wiimmfi_de.bat
@@ -215,3 +205,4 @@ https://github.com/AdmiralCurtiss/WfcPatcher/releases/tag/v1.6
 - [`docs/WIILINK_WFC_DNS_INVESTIGATION.md`](docs/WIILINK_WFC_DNS_INVESTIGATION.md)
 - [`docs/WIIMMFI_WFC_DNS.md`](docs/WIIMMFI_WFC_DNS.md)
 - [`docs/WFC_DNS_ROUTING_AND_SWITCHING.md`](docs/WFC_DNS_ROUTING_AND_SWITCHING.md)
+- [`docs/WFC_DNS_SWITCH_TEST_CHECKLIST.md`](docs/WFC_DNS_SWITCH_TEST_CHECKLIST.md)
