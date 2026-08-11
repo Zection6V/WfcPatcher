@@ -6,9 +6,10 @@ echo --------------------------------------------------
 echo   Nintendo DS WFC DNS service switcher
 echo --------------------------------------------------
 echo.
-echo 1. WiiLink WFC   - 5.161.56.11
-echo 2. Wiimmfi       - 178.62.43.212
-echo 3. Disable all repository-managed WFC DNS routing
+echo 1. WiiLink WFC              - 5.161.56.11
+echo 2. Wiimmfi / Kaeru WFC      - 178.62.43.212
+echo 3. Show current status
+echo 4. Remove WFC DNS routing / restore normal DNS
 echo 0. Cancel
 echo.
 set /p "CHOICE=Select: "
@@ -22,7 +23,11 @@ if "%CHOICE%"=="2" (
     exit /b
 )
 if "%CHOICE%"=="3" (
-    call "%~dp0disable_all_WFC_DNS_routing.bat"
+    call "%~dp0show_WFC_DNS_status.bat"
+    exit /b
+)
+if "%CHOICE%"=="4" (
+    call "%~dp0remove_WFC_DNS_routing.bat"
     exit /b
 )
 if "%CHOICE%"=="0" exit /b

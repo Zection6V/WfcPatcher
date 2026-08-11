@@ -11,27 +11,35 @@ Add-DnsClientNrptRule -Namespace ".nintendowifi.net" -NameServers "178.62.43.212
 Clear-DnsClientCache
 ```
 
-The runtime helper is:
+Runtime helper:
 
 ```text
 enable_Wiimmfi_WFC.bat
 ```
 
-It first removes both repository-managed WFC NRPT rules (`WiiLink WFC Nintendo DS` and `Wiimmfi WFC Nintendo DS`) and then adds only the Wiimmfi rule. This makes service switching deterministic and prevents the repository from leaving two competing rules for the same namespace.
+It removes both repository-managed WFC rules first and then adds only the Wiimmfi rule. This makes switching deterministic and prevents two competing repository-managed rules for the same namespace.
 
-To switch back to WiiLink, run:
+Switch back to WiiLink:
 
 ```text
 enable_WiiLink_WFC.bat
 ```
 
-To restore normal Windows DNS behavior for this repository's managed rules, run:
+Show the current state:
 
 ```text
-disable_all_WFC_DNS_routing.bat
+show_WFC_DNS_status.bat
 ```
 
-The legacy ROM-patching helper remains available separately as:
+Restore normal Windows DNS behavior for the repository-managed rules:
+
+```text
+remove_WFC_DNS_routing.bat
+```
+
+The Release1.6.0.7 helper contained an escaping bug in diagnostic PowerShell commands: `^|` was passed through to PowerShell as a literal caret. The corrected scripts avoid PowerShell pipelines inside quoted batch `-Command` strings entirely.
+
+The legacy ROM-patching helper remains available separately:
 
 ```text
 dragAndDropNdsFileToThisBatFile_wiimmfi_de.bat
